@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from .forms import DocumentForm
+from django.shortcuts import redirect
 
 # Create your views here.
 def model_form_upload(request):
