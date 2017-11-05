@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {# {{ form.as_p }} #}
+    <table border>
+	    {% for row in results.values %}
+	    <tr> 
+	    	{% for key in row %}
+	    		<th>{{ key }}</th>	
+	    	{% endfor %}
+    	</tr>
+    	<tr>
+	    	{% for value in row.values %}
+	    		<td>{{ value }}</td>	
+	    	{% endfor %}
+	    </tr>
+	    {% endfor %}
+	</table>
+
+  <p><a href="{% url 'home' %}">Return to home</a></p>
+{% endblock %}

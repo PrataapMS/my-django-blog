@@ -9,3 +9,10 @@ class Document(models.Model):
 	document = models.FileField(upload_to='documents/')
 	uploaded_at = models.DateTimeField(auto_now_add=True)
 	
+
+class Transactions(models.Model):
+	sent_by = models.CharField(max_length=30, blank=False, null=False)
+	card_id = models.CharField(max_length=20, blank=False, null=False)
+	amount = models.DecimalField(max_digits=13, decimal_places=2, blank=True, null=True)
+	trans_date = models.DateTimeField(null=True, blank=True)
+	msg_recv_date = models.DateTimeField(null=True, blank=True)
