@@ -19,23 +19,26 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
             {% endif %}
-            <h1><a href="/">Django Blog</a></h1>
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="/">Django Blog</a>
-                    </div>
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="/">Home</a></li>
-                        <li><a href="/uploads/">Upload</a></li>
-                        <li><a href="/uploads/transactions/">Analysis</a></li>
-                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'post_new' %}">Add Post</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </nav>
+            <h1><a href="/">The Null Void</a></h1>
         </div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">The Null Void</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="{% if home_active %} active {% endif %}"><a href="/">Home</a></li>
+                    <li class="{% if uploads_home_active %} active {% endif %}"><a href="/uploads/">Upload</a></li>
+                    <li class="{% if display_transaction_active %} active {% endif %}"><a href="/uploads/transactions/">Analysis</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="{% if new_post_active %} active {% endif %}"><a href="{% url 'post_new' %}">Add Post</a></li>
+                    {% endif %}
+                    {% if edit_post %}
+                        <li class="active"><a href="">{{edit_post}}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
         <div class="content container">
             <div class="row">
                 <div class="col-md-8">

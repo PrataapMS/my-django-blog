@@ -1,14 +1,20 @@
-{% extends 'base.html' %}
+{% extends 'common/base.html'%}
 
 {% block content %}
     {# {{ form.as_p }} #}
-    <table border>
-	    {% for row in results.values %}
+	{% if not results %}
+		<p>Please upload a JSON with sms data.
+			&nbsp;
+			Download <a href="https://play.google.com/store/apps/details?id=net.ugorji.android.conversationbackup">this</a> app to obtain JSON copy of SMS backup 
+		</p>
+	{% endif %}
+    <table class="table table-striped">
 	    <tr> 
-	    	{% for key in row %}
+	    	{% for key in results.values|first %}
 	    		<th>{{ key }}</th>	
 	    	{% endfor %}
     	</tr>
+	    {% for row in results.values %}
     	<tr>
 	    	{% for value in row.values %}
 	    		<td>{{ value }}</td>	
@@ -17,5 +23,5 @@
 	    {% endfor %}
 	</table>
 
-  <p><a href="{% url 'home' %}">Return to home</a></p>
+  <p><a href="{% url 'home' %}">Return home</a></p>
 {% endblock %}

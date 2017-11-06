@@ -18,26 +18,39 @@ import json
 
 # Create your views here.
 def home(request):
+    context = {}
     documents = Document.objects.all()
-    return render(request, 'core/home.html', { 'documents': documents })
+    context['uploads_home_active']  = True
+    context['documents'] = documents
+    return render(request, 'core/home.html', context)
 
 
-def simple_upload(request):
+def analyse_sms(request):
+    context = {}
+    context['uploads_home_active']  = True
+    validatation_error = True
     if request.method == 'POST' and request.FILES.get('user_messages', False):
         user_messages = request.FILES['user_messages']
         ext = user_messages.name.split('.')
-        if(ext and len(ext) > 1 and ext[-1]=="js"):
+        if(ext and len(ext) > 1 and (ext[-1]=="js" or ext[-1]=="json" or ext[-1]=="txt")):
             all_messages = get_messages(user_messages)
-            fs = FileSystemStorage()
-            filename = fs.save(user_messages.name, user_messages)
-            uploaded_file_url = fs.url(filename)
-            return render(request, 'core/simple_upload.html', {
-                'uploaded_file_url': uploaded_file_url
-            })
-    return render(request, 'core/simple_upload.html')
+            csv_file = find_credit_info(all_messages)
+            if csv_file:
+                fs = FileSystemStorage()
+                filename = fs.save(user_messages.name, user_messages)
+                uploaded_file_url = fs.url(filename)
+                context['uploaded_file_url'] = uploaded_file_url
+                return render(request, 'core/upload_sms.html', context)
+            else:
+                validatation_error = True
+        if validatation_error:
+            context['validatation_error'] = "Please upload file format with json/js/txt with json data of SMS messages"
+            return render(request, 'core/upload_sms.html', context)
+    return render(request, 'core/upload_sms.html', context)
 
 
 def model_form_upload(request):
+    context['uploads_home_active']  = True
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -45,24 +58,25 @@ def model_form_upload(request):
             return redirect('home')
     else:
         form = DocumentForm()
-    return render(request, 'core/model_form_upload.html', {'form': form})
+    context['form'] = form
+    return render(request, 'core/model_form_upload.html', context)
 
 def display_transactions(request):
+    context = {}
     results = Transactions.objects.all()
-    for i in results:
-        print i
-    return render(request, 'display/display_transactions.html', {'results': results})    
+    context['results'] = results
+    context['display_transaction_active'] = True
+    return render(request, 'display/display_transactions.html', context)    
 
 def get_messages(user_messages):
-    # try:
-    message_data = smart_unicode(user_messages.read())
-    print message_data[0:25]
-    message_data = message_data[message_data.find('{'): message_data.rfind('}')+1]
-    message_data = json.loads(message_data)
-    message_data = message_data['messages']
-    find_credit_info(message_data)
-    # except Exception as ex:
-        # print ex
+    try:
+        message_data = smart_unicode(user_messages.read())
+        message_data = message_data[message_data.find('{'): message_data.rfind('}')+1]
+        message_data = json.loads(message_data)
+        message_data = message_data['messages']
+        return message_data
+    except Exception as ex:
+        print ex
 
 def find_credit_info(sms_messages):
     credit_info_list = []
@@ -79,32 +93,23 @@ def find_credit_info(sms_messages):
                         "sender": False
                     }
         text = sms['text']
-        for i in sms:
-            print i, " = " , sms[i]
 
         card_pattern = re.compile(r'((\d*[xX]+\d+)|((\d+){3}[xX]*\d*))(\.*)(\s+)')
         card_match = re.findall(card_pattern, text)
         while (isinstance(card_match, list) or isinstance(card_match, tuple)) and len(card_match) > 0:
             card_match = card_match[0]
 
-        print card_match
-
         sender_pattern = re.compile(r'\b[A-Z]{4,}[a-z]*\b');
         sender_match = re.findall(sender_pattern, text)
-        print sender_match
         while (isinstance(sender_match, list) or isinstance(sender_match, tuple)) and len(sender_match) > 0:
             sender_match = sender_match[0]
-        print sender_match
 
         currency_pattern = re.compile(r'(?:Rs\.?|INR)\s*(\d+(?:[.,]\d+)*)|(\d+(?:[.,]\d+)*)\s*(?:Rs\.?|INR)')
         currency_match = re.findall(currency_pattern, text)
         while (isinstance(currency_match, list) or isinstance(currency_match, tuple)) and len(currency_match) > 0   :
             currency_match = currency_match[0]
-        print currency_match
-        print type(currency_match)
         if isinstance(currency_match, str) or isinstance(currency_match, unicode):
             currency_match = currency_match.replace(",", "").replace(" ","")
-        print currency_match
 
 
         # date = '\d{4}[-/]\d{2}[-/]\d{2}'
@@ -122,11 +127,9 @@ def find_credit_info(sms_messages):
         receive_date = sms['datetime']
         receive_date = parse(receive_date)
         receive_date = receive_date.strftime("%d-%m-%YT%I:%M:%S%p")
-        print receive_date
 
         if not isinstance(date_match, str):
             date_match =  receive_date
-        print date_match
 
         # S. No. | Sender ID/Number | Credit Card Number (xxxxLast 4 Digit) |  Amount | Transaction Date Time in SMS | SMS Receive Date Time| 
         # e.g. 
@@ -140,11 +143,11 @@ def find_credit_info(sms_messages):
             transaction = Transactions(sent_by=sender_match, card_id=card_match, amount=Decimal(currency_match), trans_date=datetime.strptime(date_match, "%d-%m-%YT%I:%M:%S%p"), msg_recv_date=datetime.strptime(receive_date, "%d-%m-%YT%I:%M:%S%p"))
             transaction.save()
             credit_info_list.append(credit_info)
-    print credit_info_list
 
     keys = credit_info_list[0].keys()
     with open('credit.csv', 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(credit_info_list)
-
+        return 'credit.csv'
+    return False
