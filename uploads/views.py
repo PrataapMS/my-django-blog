@@ -77,8 +77,8 @@ def get_messages(user_messages):
         message_data = json.loads(message_data)
         message_data = message_data['messages']
         return message_data
-    except Exception as ex:
-        print (ex)
+    except Exception:
+        pass
 
 def find_credit_info(sms_messages):
     credit_info_list = []
