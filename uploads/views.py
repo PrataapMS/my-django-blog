@@ -7,7 +7,7 @@ from .forms import DocumentForm
 from django.shortcuts import redirect
 from .models import Document, Transactions
 from django.core.files.storage import FileSystemStorage
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import force_text
 import re
 import datefinder 
 from datetime import datetime
@@ -72,7 +72,7 @@ def display_transactions(request):
 
 def get_messages(user_messages):
     try:
-        message_data = smart_unicode(user_messages.read())
+        message_data = force_text(user_messages.read())
         message_data = message_data[message_data.find('{'): message_data.rfind('}')+1]
         message_data = json.loads(message_data)
         message_data = message_data['messages']
