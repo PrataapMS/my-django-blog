@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from django.shortcuts import render
 from .forms import DocumentForm
@@ -77,7 +78,7 @@ def get_messages(user_messages):
         message_data = message_data['messages']
         return message_data
     except Exception as ex:
-        print ex
+        print (ex)
 
 def find_credit_info(sms_messages):
     credit_info_list = []
