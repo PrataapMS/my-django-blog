@@ -43,13 +43,14 @@ def analyse_sms(request):
                 return render(request, 'core/upload_sms.html', context)
             else:
                 validatation_error = True
-        if validatation_error:
-            context['validatation_error'] = "Please upload file format with json/js/txt with json data of SMS messages"
-            return render(request, 'core/upload_sms.html', context)
+    if validatation_error:
+        context['validatation_error'] = "Please upload file format with <b>.json/.js/.txt</b> with json data of SMS messages"
+        return render(request, 'core/upload_sms.html', context)
     return render(request, 'core/upload_sms.html', context)
 
 
 def model_form_upload(request):
+    context = {}
     context['uploads_home_active']  = True
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)

@@ -20,7 +20,6 @@
                 <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
             {% endif %}
             <h1><a href="/">The Null Void</a></h1>
-        </div>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -39,13 +38,24 @@
                 </ul>
             </div>
         </nav>
+        </div>
         <div class="content container">
-            <div class="row">
-                <div class="col-md-8">
-                {% block content %}
-                {% endblock %}
+            <div class="row">    
+                <div class="col-md-2">
+                </div>
+                <div class="row col-md-8">
+                    {# <div class="col-md-8"> #}
+                        {% block content %}
+                        {% endblock %}
+                    {# </div> #}
+                </div>
+                <div class="col-md-2">
                 </div>
             </div>
+            <hr />
+            <footer class="navbar pull-right">
+                <b>&copy; 2017 - TheNullVoid</b>
+            </footer>
         </div>
     </body>
 </html>
