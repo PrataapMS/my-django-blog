@@ -1,0 +1,26 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+  <ul>
+    <li>
+      <a href="{% url 'analyse_sms' %}"><b>Upload SMS Messages</b></a>
+    </li>
+    {# <li> #}
+      {# <a href="{% url 'model_form_upload' %}"><b>Model Form Upload</b></a> #}
+    {# </li> #}
+    <li>
+      <a href="{% url 'display_transactions' %}"><b>Check Analysis</b></a>
+    </li>
+  </ul>
+  {% if documents %}
+    <p>Uploaded files:</p>
+  {% endif %}
+  <ul>
+    {% for obj in documents %}
+      <li>
+        <a href="{{ obj.document.url }}">{{ obj.document.name }}</a>
+        <small>(Uploaded at: {{ obj.uploaded_at }})</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

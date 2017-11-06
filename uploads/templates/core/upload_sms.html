@@ -1,0 +1,30 @@
+{% extends 'common/base.html'%}
+
+{% load static %}
+
+{% block content %}
+	<p class="bg-info">
+		Upload SMS Messages as a JSON file created using <a href="https://play.google.com/store/apps/details?id=net.ugorji.android.conversationbackup">this App from playstore</a> to check all transaction you have made. 		
+	</p>
+	<form method="post" enctype="multipart/form-data" class="form-inline">
+		<div class="form-group">
+	    {% csrf_token %}
+	    <input type="file" name="user_messages" class="btn form-control" >
+	    <!-- accept=".js" -->
+	    <button type="submit" class="btn btn-primary">Upload SMS JSON</button>
+		</div>
+	</form>
+
+	{% if uploaded_file_url %}
+		<div class="alert alert-success">
+			<b>File uploaded at: </b><a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a>
+		</div>
+	{% endif %}
+	{% if validatation_error %}
+		<div class="alert alert-warning">
+			{{ validatation_error|safe }}
+		</div>
+	{% endif %}
+	<p><a href="{% url 'display_transactions' %}">Check Transactions Present in SMS Data</a></p>
+  <!-- <p><a href="{% url 'home' %}">Return home</a></p> -->
+{% endblock %}

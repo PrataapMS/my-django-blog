@@ -1,0 +1,61 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Django blog</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <!-- Font -->
+        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <!-- Custom -->
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    </head>
+    <body>
+        <div class="page-header">
+            {% if user.is_authenticated %}
+                <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+            {% endif %}
+            <h1><a href="/">The Null Void</a></h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">The Null Void</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="{% if home_active %} active {% endif %}"><a href="/">Home</a></li>
+                    <li class="{% if uploads_home_active %} active {% endif %}"><a href="/uploads/">Upload</a></li>
+                    <li class="{% if display_transaction_active %} active {% endif %}"><a href="/uploads/transactions/">Analysis</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="{% if new_post_active %} active {% endif %}"><a href="{% url 'post_new' %}">Add Post</a></li>
+                    {% endif %}
+                    {% if edit_post %}
+                        <li class="active"><a href="">{{edit_post}}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        </div>
+        <div class="content container">
+            <div class="row">    
+                <div class="col-md-2">
+                </div>
+                <div class="row col-md-8">
+                    {# <div class="col-md-8"> #}
+                        {% block content %}
+                        {% endblock %}
+                    {# </div> #}
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+            <hr />
+            <footer class="navbar pull-right">
+                <b>&copy; 2017 - TheNullVoid</b>
+            </footer>
+        </div>
+    </body>
+</html>

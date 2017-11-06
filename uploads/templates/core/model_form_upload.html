@@ -1,0 +1,17 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {# {{form}} #}
+    {% for field in form %}
+    	{{field.errors}}
+    	{{ field.label_tag }} {{ field }}
+    {% endfor %}
+    {# {{ form.as_p }} #}
+    {# {{ form.as_table }}/ #}
+    <button type="submit">Upload</button>
+  </form>
+
+  <p><a href="{% url 'home' %}">Return to home</a></p>
+{% endblock %}
