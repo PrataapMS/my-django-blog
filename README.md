@@ -14,11 +14,16 @@ The steps to deploy are mentioned below.
 
 3. create a requirements.txt for the project using pip freeze > requirements.txt
 Ideally, install these packages:
+```bash
 dj-database-url==0.4.1
 Django==1.11.1
 gunicorn==19.6.0
 psycopg2==2.6.2
 whitenoise==3.2
+datefinder==0.6.1
+python-dateutil==2.6.1
+django-extensions==1.9.7
+```
 
 4. create a file called "Procfile" and enter this line: 
 ```text
