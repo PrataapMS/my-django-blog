@@ -29,7 +29,6 @@ def home(request):
 def analyse_sms(request):
     context = {}
     context['uploads_home_active']  = True
-    validatation_error = True
     if request.method == 'POST' and request.FILES.get('user_messages', False):
         user_messages = request.FILES['user_messages']
         ext = user_messages.name.split('.')
@@ -43,10 +42,9 @@ def analyse_sms(request):
                 context['uploaded_file_url'] = uploaded_file_url
                 return render(request, 'core/upload_sms.html', context)
             else:
-                validatation_error = True
-    if validatation_error:
-        context['validatation_error'] = "Please upload file format with <b>.json/.js/.txt</b> with json data of SMS messages"
-        return render(request, 'core/upload_sms.html', context)
+                context['validatation_error'] = "The file uploaded does not contain JSON data in the required format!"
+        else:
+            context['validatation_error'] = "Please upload file format with <b>.json/.js/.txt</b> with json data of SMS messages"
     return render(request, 'core/upload_sms.html', context)
 
 
@@ -83,6 +81,8 @@ def get_messages(user_messages):
 def find_credit_info(sms_messages):
     credit_info_list = []
     count = 1
+    if not sms_messages:
+        return False
     for sms in sms_messages:
 
         test_data = {
