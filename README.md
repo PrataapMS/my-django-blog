@@ -1,7 +1,6 @@
 # Project Null-Void
 
-Hello World!
-Hey, Checkout my django App deployed on [Heroku](https://null-void.herokuapp.com/).
+Hello World! Checkout my django App deployed on [Heroku](https://null-void.herokuapp.com/).
 
 --------------------------------------------------
 
